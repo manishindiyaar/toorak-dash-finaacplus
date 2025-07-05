@@ -1,0 +1,7 @@
+this will setup react app for u ->
+
+npm create vite@latest toorak-dashboard -- --template react
+
+
+
+

@@ -1,0 +1,102 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+:root {
+  font-family: 'Inter', sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+  color-scheme: dark;
+  color: #E5E5E7;
+  background-color: #1C1C1E;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  background-color: #1C1C1E;
+  font-family: 'Inter', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  color: #E5E5E7;
+}
+
+#root {
+  width: 100%;
+  min-height: 100vh;
+  background-color: #1C1C1E;
+}
+
+.App {
+  min-height: 100vh;
+  background-color: #1C1C1E;
+}
+
+/* Custom scrollbar for dark theme */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #1C1C1E;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #3A3A3C;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #5C5C60;
+}
+
+/* Focus styles for dark theme */
+button:focus,
+input:focus {
+  outline: 2px solid #5C5C60;
+  outline-offset: 2px;
+}
+
+/* Remove default button styles */
+button {
+  font-family: 'Inter', sans-serif;
+  border: none;
+  background: none;
+  cursor: pointer;
+}
+
+/* Link styles for dark theme */
+a {
+  font-weight: 500;
+  color: #5C5C60;
+  text-decoration: inherit;
+}
+
+a:hover {
+  color: #FFFFFF;
+}
+
+/* Heading styles for dark theme */
+h1, h2, h3, h4, h5, h6 {
+  color: #FFFFFF;
+  font-family: 'Inter', sans-serif;
+}
+
+/* Selection styles for dark theme */
+::selection {
+  background-color: #5C5C60;
+  color: #FFFFFF;
+}
+
+::-moz-selection {
+  background-color: #5C5C60;
+  color: #FFFFFF;
+}

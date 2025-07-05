@@ -1,0 +1,16 @@
+
+
+
+//get request
+curl http://localhost:3000/api/loans
+
+curl http://localhost:3000/api/totalLoan
+
+curl http://localhost:3000/api/summary
+
+
+//POST METHOD to add new loan
+
+curl -X POST http://localhost:3000/api/loans \
+-H "Content-Type: application/json" \
+-d '{"borrower": "kaka jim", "propertyType": "Multifamily", "location": "Texas", "loanAmount": 680000, "ltv": 78, "status": "Funded", "loanDate": "2024-03-21"}'
