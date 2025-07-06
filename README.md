@@ -10,6 +10,27 @@ After receiving the job description for the frontend internship, I wanted to go 
 
 The goal was to show initiative, problem understanding, and practical frontend/backend development skills.
 
+## Screenshots
+
+![Toorak DealFlow Dashboard](/photos/tc1.png)
+*Toorak tech ream requirement*
+
+
+In ordered to follow Micro frontend approach i decided this .
+
+![Toorak DealFlow Dashboard](/photos/mfe.png)
+*microfrontend-approach*
+
+
+.....after thinking for so much i chose to build something i had been been doing very long. Instead of building traditional Dashboard UI let's build something which makes user experience so much smooth.
+
+and i decided these techstacks.
+![Toorak DealFlow Dashboard](/photos/slms.png)
+*all the core feature*
+
+
+
+
 ## Objective
 
 To simulate a real-world workflow similar to Toorak’s, I built a full-stack dashboard that:
@@ -79,14 +100,24 @@ Created using Express.js:
 
 
 
- Frontend UI
- Developed with:
+Frontend UI
+Developed with:
 	•	React + Vite
 	•	ShadCN UI components
     -  Basic filter and display logic
 
  
 It is Smart loan management system and why i say it smart because we added one more cool feature which is 'AI query' we have created bunch of tools where llm uses those tools to get the task done. 
+
+
+
+![Toorak DealFlow Dashboard](/photos/vercel-ai-sdk-ui-gen.png)
+*ai-genui-approach*
+
+![Toorak DealFlow Dashboard](/photos/genui1.png)
+
+
+![Toorak DealFlow Dashboard](/photos/genui2.png)
 
 
 Here i used vercel ai ask : 
@@ -124,10 +155,45 @@ The AI integration uses Google's Generative AI with specialized tools:
  ```
  cd backend
  npm i
- node server
+
 
  ```
  make sure you have pasted your gemini key here
  
+```
+process.env.GOOGLE_GENERATIVE_AI_API_KEY = 'AIxxxxxxxxxxxxxxxx';
+```
+
+then  
+
+```
+node server
+```
 
 
+```
+cd ai-for-toorak/toorak-ai
+npm i
+npm run dev
+```
+
+it will be running on - http://localhost:5001/
+
+(standalon app) it's Remote App we will then import this app in our main app.
+
+
+```
+cd toorak-dashboard
+npm i
+npm run dev
+
+```
+this is Host App (main app).
+
+it will be running on - http://localhost:5000/
+
+
+
+
+
+Thankb you :)
