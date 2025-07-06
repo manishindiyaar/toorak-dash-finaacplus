@@ -4,6 +4,21 @@
 
 A lightweight proof of concept designed specifically for Toorak Capital, aligned with my application for the React Intern role at FinaacPlus.
 
+## Watch this video
+
+<div style="position: relative; display: inline-block;">
+  <a href="https://youtu.be/3JlXZjX-ExQ?si=uDFDFhH0oNf57LJz">
+    <img src="https://img.youtube.com/vi/3JlXZjX-ExQ/maxresdefault.jpg" alt="Watch the demo video" style="width: 100%; max-width: 640px;">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/09/YouTube_full-color_icon_%282017%29.svg/1024px-YouTube_full-color_icon_%282017%29.svg.png" alt="YouTube Icon" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 68px; height: 48px;">
+  </a>
+</div>
+
+*Click the image above to watch the demo video*
+
+You can also [download the demo video directly](/photos/toorak-demo-finaacplus.mp4).
+
+
+
 ## Project Context
 
 After receiving the job description for the frontend internship, I wanted to go beyond just preparing answers. I researched Toorak Capital, studied their business model, and built something that could actually provide value — a simple, clean loan management system.

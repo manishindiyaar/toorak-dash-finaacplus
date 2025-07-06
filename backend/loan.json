@@ -416,5 +416,16 @@
     "interestPerc": 30,
     "status": "Declined",
     "loanDate": "2025-07-05"
+  },
+  {
+    "id": "L0039",
+    "borrower": "Yavak Bank",
+    "propertyType": "Industrial",
+    "location": "Alaska",
+    "loanAmount": 12000,
+    "ltv": 67,
+    "interestPerc": 20,
+    "status": "Approved",
+    "loanDate": "2002-07-06"
   }
 ]
