@@ -15,7 +15,12 @@ A lightweight proof of concept designed specifically for Toorak Capital, aligned
 
 *Click the image above to watch the demo video*
 
-You can also [download the demo video directly](/photos/toorak-demo-finaacplus.mp4).
+You can also preview the demo video directly below:
+
+<video width="100%" controls>
+  <source src="/photos/toorak-demo-finaacplus - Made with Clipchamp.mp4" type="video/mp4">
+  Your browser does not support the video tag.
+</video>
 
 
 
