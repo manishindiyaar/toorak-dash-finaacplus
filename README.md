@@ -6,10 +6,10 @@ A lightweight proof of concept designed specifically for Toorak Capital, aligned
 
 ## Watch this video
 
-<div style="position: relative; display: inline-block;">
+
+<div align="center">
   <a href="https://youtu.be/3JlXZjX-ExQ?si=uDFDFhH0oNf57LJz">
-    <img src="https://img.youtube.com/vi/3JlXZjX-ExQ/maxresdefault.jpg" alt="Watch the demo video" style="width: 100%; max-width: 640px;">
-    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/09/YouTube_full-color_icon_%282017%29.svg/1024px-YouTube_full-color_icon_%282017%29.svg.png" alt="YouTube Icon" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 68px; height: 48px;">
+    <img src="https://img.shields.io/badge/Watch%20Demo-YouTube-red?style=for-the-badge&logo=youtube" alt="Watch Demo on YouTube">
   </a>
 </div>
 
