@@ -18,22 +18,50 @@ app.use(express.json());
 let loans = require('./loan.json');
 
 // Allowed loan statuses
-const ALLOWED_STATUS = ['Pending','Approved','Declined','Funded','All Paid'];
+const ALLOWED_STATUS = ['Pending','Approved','Declined','Funded','All Paid','In Review'];
 
-// Create loan tool for AI
+// Enhanced loan search and filter tool
 const loansTool = tool({
-  description: 'Get loan details from the database. Use this tool when users ask about loans, loan data, or specific loan information.',
+  description: 'Search and filter loans with comprehensive criteria. Use this tool when users ask about loans, loan data, or specific loan information.',
   parameters: z.object({
     count: z.number().optional().describe('Number of loans to return, defaults to 10'),
-    status: z.string().optional().describe('Filter by loan status (Funded, Approved, Pending, Declined)'),
-    propertyType: z.string().optional().describe('Filter by property type (Residential, Commercial, Industrial, etc.)'),
+    status: z.string().optional().describe('Filter by loan status (Funded, Approved, Pending, Declined, In Review)'),
+    propertyType: z.string().optional().describe('Filter by property type (Residential, Commercial, Industrial, Mixed Use, Retail, Office)'),
     location: z.string().optional().describe('Filter by location/state'),
+    minLoanAmount: z.number().optional().describe('Minimum loan amount'),
+    maxLoanAmount: z.number().optional().describe('Maximum loan amount'),
+    minLtv: z.number().optional().describe('Minimum LTV percentage'),
+    maxLtv: z.number().optional().describe('Maximum LTV percentage'),
+    minInterestRate: z.number().optional().describe('Minimum interest rate percentage'),
+    maxInterestRate: z.number().optional().describe('Maximum interest rate percentage'),
+    fromDate: z.string().optional().describe('Start date filter (YYYY-MM-DD)'),
+    toDate: z.string().optional().describe('End date filter (YYYY-MM-DD)'),
+    borrowerName: z.string().optional().describe('Filter by borrower name (partial match)'),
+    sortBy: z.enum(['loanAmount', 'loanDate', 'ltv', 'interestPerc', 'borrower']).optional().describe('Sort results by field'),
+    sortOrder: z.enum(['asc', 'desc']).optional().describe('Sort order (ascending or descending)'),
   }),
-  execute: async function ({ count = 10, status, propertyType, location }) {
+  execute: async function ({ 
+    count = 10, 
+    status, 
+    propertyType, 
+    location, 
+    minLoanAmount, 
+    maxLoanAmount, 
+    minLtv, 
+    maxLtv, 
+    minInterestRate, 
+    maxInterestRate, 
+    fromDate, 
+    toDate, 
+    borrowerName,
+    sortBy = 'loanDate',
+    sortOrder = 'desc'
+  }) {
     await new Promise(resolve => setTimeout(resolve, 500));
     
     let filteredLoans = [...loans];
     
+    // Apply filters
     if (status) {
       filteredLoans = filteredLoans.filter(loan => 
         loan.status.toLowerCase().includes(status.toLowerCase())
@@ -52,15 +80,254 @@ const loansTool = tool({
       );
     }
     
-    filteredLoans.sort((a, b) => new Date(b.loanDate) - new Date(a.loanDate));
+    if (minLoanAmount) {
+      filteredLoans = filteredLoans.filter(loan => loan.loanAmount >= minLoanAmount);
+    }
+    
+    if (maxLoanAmount) {
+      filteredLoans = filteredLoans.filter(loan => loan.loanAmount <= maxLoanAmount);
+    }
+    
+    if (minLtv) {
+      filteredLoans = filteredLoans.filter(loan => loan.ltv >= minLtv);
+    }
+    
+    if (maxLtv) {
+      filteredLoans = filteredLoans.filter(loan => loan.ltv <= maxLtv);
+    }
+    
+    if (minInterestRate) {
+      filteredLoans = filteredLoans.filter(loan => loan.interestPerc >= minInterestRate);
+    }
+    
+    if (maxInterestRate) {
+      filteredLoans = filteredLoans.filter(loan => loan.interestPerc <= maxInterestRate);
+    }
+    
+    if (fromDate) {
+      filteredLoans = filteredLoans.filter(loan => new Date(loan.loanDate) >= new Date(fromDate));
+    }
+    
+    if (toDate) {
+      filteredLoans = filteredLoans.filter(loan => new Date(loan.loanDate) <= new Date(toDate));
+    }
+    
+    if (borrowerName) {
+      filteredLoans = filteredLoans.filter(loan => 
+        loan.borrower.toLowerCase().includes(borrowerName.toLowerCase())
+      );
+    }
+    
+    // Apply sorting
+    filteredLoans.sort((a, b) => {
+      let aValue = a[sortBy];
+      let bValue = b[sortBy];
+      
+      if (sortBy === 'loanDate') {
+        aValue = new Date(aValue);
+        bValue = new Date(bValue);
+      } else if (sortBy === 'borrower') {
+        aValue = aValue.toLowerCase();
+        bValue = bValue.toLowerCase();
+      }
+      
+      if (sortOrder === 'asc') {
+        return aValue < bValue ? -1 : aValue > bValue ? 1 : 0;
+      } else {
+        return aValue > bValue ? -1 : aValue < bValue ? 1 : 0;
+      }
+    });
     
     return {
       loans: filteredLoans.slice(0, count),
       total: filteredLoans.length,
-      // This indicates whether any filters were applied to the loans
-      // If true, it means the results were filtered by status, propertyType, or location
-      // If false, it means all loans are being returned without filtering
-      filtered: filteredLoans.length < loans.length
+      totalInDatabase: loans.length,
+      filtered: filteredLoans.length < loans.length,
+      filters: {
+        status,
+        propertyType,
+        location,
+        minLoanAmount,
+        maxLoanAmount,
+        minLtv,
+        maxLtv,
+        minInterestRate,
+        maxInterestRate,
+        fromDate,
+        toDate,
+        borrowerName
+      }
+    };
+  },
+});
+
+// Interest calculation tool
+const interestCalculatorTool = tool({
+  description: 'Calculate accrued interest for loans. Use this when users want to know interest calculations, accrued interest, or loan payments.',
+  parameters: z.object({
+    loanId: z.string().optional().describe('Specific loan ID to calculate interest for'),
+    loanAmount: z.number().optional().describe('Loan amount for custom calculation'),
+    interestRate: z.number().optional().describe('Interest rate percentage for custom calculation'),
+    startDate: z.string().optional().describe('Start date for interest calculation (YYYY-MM-DD)'),
+    endDate: z.string().optional().describe('End date for interest calculation (YYYY-MM-DD), defaults to today'),
+    calculationType: z.enum(['simple', 'compound']).optional().describe('Type of interest calculation (simple or compound)'),
+  }),
+  execute: async function ({ 
+    loanId, 
+    loanAmount, 
+    interestRate, 
+    startDate, 
+    endDate, 
+    calculationType = 'simple' 
+  }) {
+    await new Promise(resolve => setTimeout(resolve, 300));
+    
+    if (loanId) {
+      // Calculate for specific loan
+      const loan = loans.find(l => l.id === loanId);
+      if (!loan) {
+        return { error: 'Loan not found' };
+      }
+      
+      const loanDate = new Date(loan.loanDate);
+      const today = new Date();
+      const endDateObj = endDate ? new Date(endDate) : today;
+      const diffDays = Math.floor((endDateObj - loanDate) / (1000 * 60 * 60 * 24));
+      const years = diffDays / 365;
+      
+      let interest;
+      if (calculationType === 'compound') {
+        interest = loan.loanAmount * (Math.pow((1 + loan.interestPerc / 100), years) - 1);
+      } else {
+        interest = loan.loanAmount * (loan.interestPerc / 100) * years;
+      }
+      
+      return {
+        loanId: loan.id,
+        borrower: loan.borrower,
+        loanAmount: loan.loanAmount,
+        loanDate: loan.loanDate,
+        endDate: endDateObj.toISOString().split('T')[0],
+        daysElapsed: diffDays,
+        years: parseFloat(years.toFixed(4)),
+        interestRate: loan.interestPerc,
+        calculationType,
+        accruedInterest: parseFloat(interest.toFixed(2)),
+        totalAmount: parseFloat((loan.loanAmount + interest).toFixed(2))
+      };
+    } else if (loanAmount && interestRate && startDate) {
+      // Custom calculation
+      const startDateObj = new Date(startDate);
+      const endDateObj = endDate ? new Date(endDate) : new Date();
+      const diffDays = Math.floor((endDateObj - startDateObj) / (1000 * 60 * 60 * 24));
+      const years = diffDays / 365;
+      
+      let interest;
+      if (calculationType === 'compound') {
+        interest = loanAmount * (Math.pow((1 + interestRate / 100), years) - 1);
+      } else {
+        interest = loanAmount * (interestRate / 100) * years;
+      }
+      
+      return {
+        loanAmount,
+        interestRate,
+        startDate,
+        endDate: endDateObj.toISOString().split('T')[0],
+        daysElapsed: diffDays,
+        years: parseFloat(years.toFixed(4)),
+        calculationType,
+        accruedInterest: parseFloat(interest.toFixed(2)),
+        totalAmount: parseFloat((loanAmount + interest).toFixed(2))
+      };
+    } else {
+      return { error: 'Please provide either a loan ID or loan amount, interest rate, and start date' };
+    }
+  },
+});
+
+// Portfolio analytics tool
+const portfolioAnalyticsTool = tool({
+  description: 'Analyze loan portfolio statistics and provide insights. Use this when users ask about portfolio performance, statistics, summaries, or analytics.',
+  parameters: z.object({
+    analysisType: z.enum(['summary', 'byStatus', 'byProperty', 'byLocation', 'byLTV', 'byInterestRate', 'trends']).optional().describe('Type of analysis to perform'),
+    groupBy: z.enum(['status', 'propertyType', 'location', 'month', 'year']).optional().describe('Group results by field'),
+    includeInterest: z.boolean().optional().describe('Include interest calculations in analysis'),
+  }),
+  execute: async function ({ analysisType = 'summary', groupBy, includeInterest = false }) {
+    await new Promise(resolve => setTimeout(resolve, 400));
+    
+    const analysis = {
+      analysisType,
+      totalLoans: loans.length,
+      totalLoanAmount: loans.reduce((sum, loan) => sum + loan.loanAmount, 0),
+      averageLoanAmount: loans.reduce((sum, loan) => sum + loan.loanAmount, 0) / loans.length,
+      averageLTV: loans.reduce((sum, loan) => sum + loan.ltv, 0) / loans.length,
+      averageInterestRate: loans.reduce((sum, loan) => sum + loan.interestPerc, 0) / loans.length,
+    };
+    
+    // Status breakdown
+    const statusBreakdown = {};
+    loans.forEach(loan => {
+      if (!statusBreakdown[loan.status]) {
+        statusBreakdown[loan.status] = { count: 0, totalAmount: 0 };
+      }
+      statusBreakdown[loan.status].count++;
+      statusBreakdown[loan.status].totalAmount += loan.loanAmount;
+    });
+    
+    // Property type breakdown
+    const propertyTypeBreakdown = {};
+    loans.forEach(loan => {
+      if (!propertyTypeBreakdown[loan.propertyType]) {
+        propertyTypeBreakdown[loan.propertyType] = { count: 0, totalAmount: 0 };
+      }
+      propertyTypeBreakdown[loan.propertyType].count++;
+      propertyTypeBreakdown[loan.propertyType].totalAmount += loan.loanAmount;
+    });
+    
+    // Location breakdown
+    const locationBreakdown = {};
+    loans.forEach(loan => {
+      if (!locationBreakdown[loan.location]) {
+        locationBreakdown[loan.location] = { count: 0, totalAmount: 0 };
+      }
+      locationBreakdown[loan.location].count++;
+      locationBreakdown[loan.location].totalAmount += loan.loanAmount;
+    });
+    
+    // LTV ranges
+    const ltvRanges = {
+      'Low Risk (≤60%)': loans.filter(l => l.ltv <= 60).length,
+      'Medium Risk (61-75%)': loans.filter(l => l.ltv > 60 && l.ltv <= 75).length,
+      'High Risk (>75%)': loans.filter(l => l.ltv > 75).length,
+    };
+    
+    // Interest calculations if requested
+    let totalAccruedInterest = 0;
+    if (includeInterest) {
+      totalAccruedInterest = loans.reduce((sum, loan) => {
+        const loanDate = new Date(loan.loanDate);
+        const today = new Date();
+        const years = (today - loanDate) / (1000 * 60 * 60 * 24 * 365);
+        const interest = loan.loanAmount * (loan.interestPerc / 100) * years;
+        return sum + interest;
+      }, 0);
+    }
+    
+    return {
+      ...analysis,
+      statusBreakdown,
+      propertyTypeBreakdown,
+      locationBreakdown,
+      ltvRanges,
+      totalAccruedInterest: includeInterest ? parseFloat(totalAccruedInterest.toFixed(2)) : null,
+      insights: {
+        mostCommonStatus: Object.entries(statusBreakdown).reduce((a, b) => statusBreakdown[a[0]].count > statusBreakdown[b[0]].count ? a : b)[0],
+        mostCommonPropertyType: Object.entries(propertyTypeBreakdown).reduce((a, b) => propertyTypeBreakdown[a[0]].count > propertyTypeBreakdown[b[0]].count ? a : b)[0],
+        topLocationByVolume: Object.entries(locationBreakdown).reduce((a, b) => locationBreakdown[a[0]].totalAmount > locationBreakdown[b[0]].totalAmount ? a : b)[0],
+        riskProfile: ltvRanges['High Risk (>75%)'] > loans.length * 0.3 ? 'High Risk Portfolio' : 'Balanced Portfolio'
+      }
     };
   },
 });
@@ -72,11 +339,25 @@ app.post('/api/chat', async (req, res) => {
 
     const result = streamText({
       model: google('gemini-2.5-flash-preview-04-17'),
-      system: 'You are a helpful assistant for a loan management system. When users ask about loans, ALWAYS use the getLoanDetails tool to fetch and display the information. Do NOT describe or list the loan details in text - the tool will handle displaying the loan cards. Only provide brief confirmations like "Here are the loans that match your criteria:" or "I found the following loans:" and let the tool results show the data.',
+      system: `You are a helpful assistant for a loan management system. You have access to powerful tools to help users analyze their loan portfolio:
+
+1. Use 'getLoanDetails' to search and filter loans with comprehensive criteria
+2. Use 'calculateInterest' to perform interest calculations on loans
+3. Use 'analyzePortfolio' to provide statistical analysis and insights
+
+Guidelines:
+- Always use the appropriate tool based on the user's request
+- When users ask about loans, use getLoanDetails with appropriate filters
+- When users ask about interest, payments, or accrued interest, use calculateInterest
+- When users ask about portfolio performance, statistics, or analytics, use analyzePortfolio
+- Provide clear explanations of the results
+- Be helpful and informative in your responses`,
       messages,
       maxSteps: 5,
       tools: {
         getLoanDetails: loansTool,
+        calculateInterest: interestCalculatorTool,
+        analyzePortfolio: portfolioAnalyticsTool,
       },
     });
 

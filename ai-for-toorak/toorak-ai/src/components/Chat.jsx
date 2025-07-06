@@ -46,6 +46,203 @@ const Chat = ({ initialQuery, onBackToLanding }) => {
     navigator.clipboard.writeText(text);
   };
 
+  const formatCurrency = (amount) => {
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+      minimumFractionDigits: 0,
+    }).format(amount);
+  };
+
+  const formatPercentage = (value) => {
+    return `${value.toFixed(2)}%`;
+  };
+
+  const formatDate = (dateString) => {
+    return new Date(dateString).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric'
+    });
+  };
+
+  // Render interest calculation results
+  const renderInterestCalculation = (result) => {
+    if (result.error) {
+      return (
+        <div className="interest-calculation error">
+          <h3>❌ Error</h3>
+          <p>{result.error}</p>
+        </div>
+      );
+    }
+
+    return (
+      <div className="interest-calculation">
+        <h3>💰 Interest Calculation</h3>
+        <div className="calculation-details">
+          {result.loanId && (
+            <div className="loan-info">
+              <h4>Loan: {result.loanId} - {result.borrower}</h4>
+            </div>
+          )}
+          <div className="calculation-grid">
+            <div className="calc-item">
+              <label>Principal Amount:</label>
+              <span>{formatCurrency(result.loanAmount)}</span>
+            </div>
+            <div className="calc-item">
+              <label>Interest Rate:</label>
+              <span>{formatPercentage(result.interestRate)}</span>
+            </div>
+            <div className="calc-item">
+              <label>Period:</label>
+              <span>{result.daysElapsed} days ({result.years} years)</span>
+            </div>
+            <div className="calc-item">
+              <label>Start Date:</label>
+              <span>{formatDate(result.loanDate || result.startDate)}</span>
+            </div>
+            <div className="calc-item">
+              <label>End Date:</label>
+              <span>{formatDate(result.endDate)}</span>
+            </div>
+            <div className="calc-item">
+              <label>Calculation Type:</label>
+              <span>{result.calculationType === 'compound' ? 'Compound' : 'Simple'} Interest</span>
+            </div>
+            <div className="calc-item highlight">
+              <label>Accrued Interest:</label>
+              <span>{formatCurrency(result.accruedInterest)}</span>
+            </div>
+            <div className="calc-item total">
+              <label>Total Amount:</label>
+              <span>{formatCurrency(result.totalAmount)}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  // Render portfolio analytics results
+  const renderPortfolioAnalytics = (result) => {
+    return (
+      <div className="portfolio-analytics">
+        <h3>📊 Portfolio Analytics</h3>
+        
+        {/* Summary Stats */}
+        <div className="summary-stats">
+          <div className="stat-card">
+            <h4>Total Loans</h4>
+            <span className="stat-value">{result.totalLoans}</span>
+          </div>
+          <div className="stat-card">
+            <h4>Total Amount</h4>
+            <span className="stat-value">{formatCurrency(result.totalLoanAmount)}</span>
+          </div>
+          <div className="stat-card">
+            <h4>Average Loan</h4>
+            <span className="stat-value">{formatCurrency(result.averageLoanAmount)}</span>
+          </div>
+          <div className="stat-card">
+            <h4>Average LTV</h4>
+            <span className="stat-value">{formatPercentage(result.averageLTV)}</span>
+          </div>
+          <div className="stat-card">
+            <h4>Average Rate</h4>
+            <span className="stat-value">{formatPercentage(result.averageInterestRate)}</span>
+          </div>
+          {result.totalAccruedInterest && (
+            <div className="stat-card">
+              <h4>Accrued Interest</h4>
+              <span className="stat-value">{formatCurrency(result.totalAccruedInterest)}</span>
+            </div>
+          )}
+        </div>
+
+        {/* Breakdowns */}
+        <div className="breakdowns">
+          <div className="breakdown-section">
+            <h4>📋 Status Breakdown</h4>
+            <div className="breakdown-grid">
+              {Object.entries(result.statusBreakdown).map(([status, data]) => (
+                <div key={status} className="breakdown-item">
+                  <span className="breakdown-label">{status}</span>
+                  <span className="breakdown-count">{data.count} loans</span>
+                  <span className="breakdown-amount">{formatCurrency(data.totalAmount)}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="breakdown-section">
+            <h4>🏢 Property Type Breakdown</h4>
+            <div className="breakdown-grid">
+              {Object.entries(result.propertyTypeBreakdown).map(([type, data]) => (
+                <div key={type} className="breakdown-item">
+                  <span className="breakdown-label">{type}</span>
+                  <span className="breakdown-count">{data.count} loans</span>
+                  <span className="breakdown-amount">{formatCurrency(data.totalAmount)}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="breakdown-section">
+            <h4>📍 Location Breakdown</h4>
+            <div className="breakdown-grid">
+              {Object.entries(result.locationBreakdown).slice(0, 8).map(([location, data]) => (
+                <div key={location} className="breakdown-item">
+                  <span className="breakdown-label">{location}</span>
+                  <span className="breakdown-count">{data.count} loans</span>
+                  <span className="breakdown-amount">{formatCurrency(data.totalAmount)}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="breakdown-section">
+            <h4>⚠️ Risk Profile (LTV)</h4>
+            <div className="breakdown-grid">
+              {Object.entries(result.ltvRanges).map(([range, count]) => (
+                <div key={range} className="breakdown-item">
+                  <span className="breakdown-label">{range}</span>
+                  <span className="breakdown-count">{count} loans</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Insights */}
+        <div className="insights">
+          <h4>💡 Key Insights</h4>
+          <div className="insights-grid">
+            <div className="insight-item">
+              <label>Most Common Status:</label>
+              <span>{result.insights.mostCommonStatus}</span>
+            </div>
+            <div className="insight-item">
+              <label>Most Common Property Type:</label>
+              <span>{result.insights.mostCommonPropertyType}</span>
+            </div>
+            <div className="insight-item">
+              <label>Top Location by Volume:</label>
+              <span>{result.insights.topLocationByVolume}</span>
+            </div>
+            <div className="insight-item">
+              <label>Risk Profile:</label>
+              <span className={result.insights.riskProfile.includes('High') ? 'high-risk' : 'balanced-risk'}>
+                {result.insights.riskProfile}
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
   const renderMessage = (message, isLast) => {
     const isUser = message.role === 'user';
     const isAssistant = message.role === 'assistant';
@@ -55,36 +252,81 @@ const Chat = ({ initialQuery, onBackToLanding }) => {
         <div className="message-avatar">
           {isUser ? 'U' : '✨'}
         </div>
-                  <div className="message-content">
-            {!message.toolInvocations?.length && (
-              <div className="message-bubble">
-                {message.content}
-              </div>
-            )}
+        <div className="message-content">
+          {!message.toolInvocations?.length && (
+            <div className="message-bubble">
+              {message.content}
+            </div>
+          )}
           
           {/* Tool Results */}
           {message.toolInvocations?.map((toolInvocation) => {
             const { toolName, toolCallId, state, result } = toolInvocation;
             
-            if (state === 'result' && toolName === 'getLoanDetails') {
-              return (
-                <div key={toolCallId} className="tool-result">
-                  <div className="loan-results-header">
-                    <h3>Loan Results</h3>
-                    <p>Found {result.loans.length} matching loans</p>
-                  </div>
-                  <div className="loans-grid">
-                    {result.loans.map((loan) => (
-                      <LoanCard key={loan.id} loan={loan} />
-                    ))}
-                  </div>
-                </div>
-              );
-            } else if (state === 'call' && toolName === 'getLoanDetails') {
+            if (state === 'result') {
+              switch (toolName) {
+                case 'getLoanDetails':
+                  return (
+                    <div key={toolCallId} className="tool-result">
+                      <div className="loan-results-header">
+                        <h3>🔍 Loan Search Results</h3>
+                        <div className="result-summary">
+                          <span>Found {result.loans.length} of {result.total} matching loans</span>
+                          {result.filtered && (
+                            <span className="filtered-indicator">
+                              (Filtered from {result.totalInDatabase} total loans)
+                            </span>
+                          )}
+                        </div>
+                        {result.filters && Object.values(result.filters).some(f => f) && (
+                          <div className="active-filters">
+                            <h4>Active Filters:</h4>
+                            {Object.entries(result.filters).map(([key, value]) => 
+                              value && (
+                                <span key={key} className="filter-tag">
+                                  {key}: {value}
+                                </span>
+                              )
+                            )}
+                          </div>
+                        )}
+                      </div>
+                      <div className="loans-grid">
+                        {result.loans.map((loan) => (
+                          <LoanCard key={loan.id} loan={loan} />
+                        ))}
+                      </div>
+                    </div>
+                  );
+                
+                case 'calculateInterest':
+                  return (
+                    <div key={toolCallId} className="tool-result">
+                      {renderInterestCalculation(result)}
+                    </div>
+                  );
+                
+                case 'analyzePortfolio':
+                  return (
+                    <div key={toolCallId} className="tool-result">
+                      {renderPortfolioAnalytics(result)}
+                    </div>
+                  );
+                
+                default:
+                  return null;
+              }
+            } else if (state === 'call') {
+              const loadingMessages = {
+                'getLoanDetails': 'Searching for loans...',
+                'calculateInterest': 'Calculating interest...',
+                'analyzePortfolio': 'Analyzing portfolio...'
+              };
+              
               return (
                 <div key={toolCallId} className="tool-loading">
                   <div className="loading-spinner"></div>
-                  <span>Searching for loans...</span>
+                  <span>{loadingMessages[toolName] || 'Processing...'}</span>
                 </div>
               );
             }
@@ -129,7 +371,7 @@ const Chat = ({ initialQuery, onBackToLanding }) => {
       
       <div className="chat-header">
         <h1>Toorak AI Assistant</h1>
-        <p>Ask me anything about your loan portfolio</p>
+        <p>Advanced loan portfolio analysis and management</p>
       </div>
       
       <div className="chat-messages">
@@ -189,21 +431,39 @@ const Chat = ({ initialQuery, onBackToLanding }) => {
               <div className="example-buttons">
                 <button
                   className="example-button"
-                  onClick={() => handleExampleQuery('Show me all loans in Los Angeles')}
+                  onClick={() => handleExampleQuery('Show me all commercial loans with LTV below 70%')}
                 >
-                  Loans in Los Angeles
+                  📊 Commercial loans (LTV &lt; 70%)
                 </button>
                 <button
                   className="example-button"
-                  onClick={() => handleExampleQuery('Find commercial loans over $1M')}
+                  onClick={() => handleExampleQuery('Calculate interest for loan L001')}
                 >
-                  Commercial loans over $1M
+                  💰 Calculate interest for L001
                 </button>
                 <button
                   className="example-button"
-                  onClick={() => handleExampleQuery('Show loans with LTV below 70%')}
+                  onClick={() => handleExampleQuery('Show me portfolio analytics with interest calculations')}
                 >
-                  Low LTV loans
+                  📈 Portfolio analytics
+                </button>
+                <button
+                  className="example-button"
+                  onClick={() => handleExampleQuery('Find loans over $1M funded this year')}
+                >
+                  🔍 High-value loans (2024)
+                </button>
+                <button
+                  className="example-button"
+                  onClick={() => handleExampleQuery('Show me residential loans in California sorted by amount')}
+                >
+                  🏠 CA residential loans
+                </button>
+                <button
+                  className="example-button"
+                  onClick={() => handleExampleQuery('What is the total accrued interest for all funded loans?')}
+                >
+                  📊 Total accrued interest
                 </button>
               </div>
             </div>

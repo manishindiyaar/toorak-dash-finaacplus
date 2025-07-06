@@ -1,1 +1,133 @@
-# toorak-dash-finaacplus
+
+
+# Toorak DealFlow – Loan Management Dashboard
+
+A lightweight proof of concept designed specifically for Toorak Capital, aligned with my application for the React Intern role at FinaacPlus.
+
+## Project Context
+
+After receiving the job description for the frontend internship, I wanted to go beyond just preparing answers. I researched Toorak Capital, studied their business model, and built something that could actually provide value — a simple, clean loan management system.
+
+The goal was to show initiative, problem understanding, and practical frontend/backend development skills.
+
+## Objective
+
+To simulate a real-world workflow similar to Toorak’s, I built a full-stack dashboard that:
+
+- Manages loans data
+- Performs basic calculations
+- Allows data updates
+- Presents insights clearly
+- Adds AI-powered query support
+
+## Features
+
+### 1. Loan Overview
+
+Displays a list of loans with attributes like:
+
+- Borrower name
+- Location
+- Property type
+- Loan amount
+- LTV (Loan to Value ratio)
+- Status (Funded, Pending)
+- Loan date
+
+### 2. Custom JSON Database
+
+I decided not to use an actual database so I could practice JavaScript array methods. The JSON file simulates database behavior.
+
+Initial schema:
+
+```json
+{
+  "id": "L001",
+  "borrower": "John Doe",
+  "propertyType": "Residential",
+  "location": "Texas",
+  "loanAmount": 250000,
+  "ltv": 72,
+  "status": "Funded",
+  "loanDate": "2024-04-12"
+}
+
+```
+Later improved to include interest percentage:
+
+```json
+{
+  "id": "L001",
+  "borrower": "John Doe",
+  "propertyType": "Residential",
+  "location": "Texas",
+  "loanAmount": 250000,
+  "interestPerc": 5,
+  "ltv": 72,
+  "status": "Funded",
+  "loanDate": "2024-04-12"
+}
+```
+
+This addition allows us to calculate interest income and simulate real-world loan profitability.
+
+
+Backend API
+
+Created using Express.js:
+	•	GET /loans – Returns all loan data
+
+
+
+ Frontend UI
+ Developed with:
+	•	React + Vite
+	•	ShadCN UI components
+    -  Basic filter and display logic
+
+ 
+It is Smart loan management system and why i say it smart because we added one more cool feature which is 'AI query' we have created bunch of tools where llm uses those tools to get the task done. 
+
+
+Here i used vercel ai ask : 
+## AI Integration
+
+The system integrates advanced AI capabilities using Vercel AI SDK: [Vercel AI SDK](https://sdk.vercel.ai/docs)
+with gemini.
+
+- **AI-Powered Analysis**:  provides the foundation for our intelligent loan analysis system
+
+- **Natural Language Queries**: Users can ask questions about loans in plain English
+- **AI-Powered Tools**: Custom tools for loan details, interest calculations, and portfolio analytics
+- **Contextual Understanding**: The AI understands loan terminology and provides relevant responses
+
+Example queries:
+- "Show me all residential loans in Texas"
+- "Calculate the interest on loan L001 over 5 years"
+- "What's the total value of all funded loans?"
+- "Compare performance of commercial vs residential loans"
+
+The AI integration uses Google's Generative AI with specialized tools:
+- `getLoanDetails`: Searches and filters loan data
+- `calculateInterest`: Performs interest calculations
+- `analyzePortfolio`: Generates portfolio statistics and analytics
+
+...and main thing is that it renders UI not just only texts.
+
+ 
+ This was built in one day, focused on clarity and problem alignment. Instead of showcasing just skills, this project reflects my thinking process, how I approach business challenges, and my ability to deliver quickly.
+
+
+
+ # Setup
+
+ ```
+ cd backend
+ npm i
+ node server
+
+ ```
+ make sure you have pasted your gemini key here
+ 
+
+

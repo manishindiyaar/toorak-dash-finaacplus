@@ -7,7 +7,7 @@ const isProd = process.env.NODE_ENV === 'production';
 // Define the URL of the remote's remoteEntry.js
 const toorakAiUrl = isProd
   ? process.env.TOORAK_AI_URL || 'https://toorak-ai-url.com/remoteEntry.js'
-  : 'http://localhost:3001/remoteEntry.js';
+  : 'http://localhost:5001/remoteEntry.js';
 
 console.log('Using Toorak AI URL:', toorakAiUrl);
 

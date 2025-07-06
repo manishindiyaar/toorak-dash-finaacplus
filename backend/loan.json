@@ -370,7 +370,7 @@
     "loanAmount": 12000,
     "ltv": 89,
     "interestPerc": 12,
-    "status": "Pending",
+    "status": "All Paid",
     "loanDate": "2020-06-09"
   },
   {

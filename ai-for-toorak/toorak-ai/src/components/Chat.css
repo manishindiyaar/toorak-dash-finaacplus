@@ -196,6 +196,272 @@
   gap: 12px;
 }
 
+/* Enhanced loan results */
+.result-summary {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.filtered-indicator {
+  color: #9B9B9F;
+  font-size: 0.8rem;
+}
+
+.active-filters {
+  margin-top: 1rem;
+  padding: 12px;
+  background-color: #2C2C2E;
+  border-radius: 8px;
+  border: 1px solid #3A3A3C;
+}
+
+.active-filters h4 {
+  margin: 0 0 8px 0;
+  font-size: 0.85rem;
+  color: #9B9B9F;
+  font-weight: 500;
+}
+
+.filter-tag {
+  display: inline-block;
+  background-color: #1E3A8A;
+  color: #93C5FD;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  margin-right: 6px;
+  margin-bottom: 4px;
+  border: 1px solid #3B82F6;
+}
+
+/* Interest Calculation Styles */
+.interest-calculation {
+  background-color: #252527;
+  border-radius: 12px;
+  padding: 20px;
+  margin-top: 16px;
+  border: 1px solid #3A3A3C;
+}
+
+.interest-calculation h3 {
+  margin: 0 0 16px 0;
+  color: #FFFFFF;
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+.interest-calculation.error {
+  background-color: #2D1B1B;
+  border-color: #DC2626;
+}
+
+.interest-calculation.error h3 {
+  color: #F87171;
+}
+
+.loan-info h4 {
+  margin: 0 0 16px 0;
+  color: #E5E5E7;
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+.calculation-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 12px;
+}
+
+.calc-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  background-color: #2C2C2E;
+  border-radius: 8px;
+  border: 1px solid #3A3A3C;
+}
+
+.calc-item label {
+  font-weight: 500;
+  color: #9B9B9F;
+  font-size: 0.85rem;
+}
+
+.calc-item span {
+  font-weight: 600;
+  color: #FFFFFF;
+}
+
+.calc-item.highlight {
+  background-color: #2D2A1A;
+  border-color: #F59E0B;
+}
+
+.calc-item.highlight span {
+  color: #FCD34D;
+}
+
+.calc-item.total {
+  background-color: #1B2D1B;
+  border-color: #10B981;
+}
+
+.calc-item.total span {
+  color: #6EE7B7;
+  font-size: 1.1rem;
+}
+
+/* Portfolio Analytics Styles */
+.portfolio-analytics {
+  background-color: #252527;
+  border-radius: 12px;
+  padding: 20px;
+  margin-top: 16px;
+  border: 1px solid #3A3A3C;
+}
+
+.portfolio-analytics h3 {
+  margin: 0 0 20px 0;
+  color: #FFFFFF;
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+.summary-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.stat-card {
+  background-color: #2C2C2E;
+  padding: 16px;
+  border-radius: 8px;
+  text-align: center;
+  border: 1px solid #3A3A3C;
+}
+
+.stat-card h4 {
+  margin: 0 0 8px 0;
+  color: #9B9B9F;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.stat-value {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #FFFFFF;
+}
+
+.breakdowns {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.breakdown-section {
+  background-color: #2C2C2E;
+  padding: 16px;
+  border-radius: 8px;
+  border: 1px solid #3A3A3C;
+}
+
+.breakdown-section h4 {
+  margin: 0 0 12px 0;
+  color: #FFFFFF;
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.breakdown-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.breakdown-item {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  gap: 8px;
+  align-items: center;
+  padding: 8px 12px;
+  background-color: #1C1C1E;
+  border-radius: 6px;
+  border: 1px solid #3A3A3C;
+}
+
+.breakdown-label {
+  font-weight: 500;
+  color: #E5E5E7;
+  font-size: 0.85rem;
+}
+
+.breakdown-count {
+  color: #9B9B9F;
+  font-size: 0.75rem;
+}
+
+.breakdown-amount {
+  color: #FFFFFF;
+  font-weight: 600;
+  font-size: 0.85rem;
+}
+
+.insights {
+  background-color: #2C2C2E;
+  padding: 16px;
+  border-radius: 8px;
+  border: 1px solid #3A3A3C;
+}
+
+.insights h4 {
+  margin: 0 0 12px 0;
+  color: #FFFFFF;
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.insights-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
+}
+
+.insight-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  background-color: #1C1C1E;
+  border-radius: 6px;
+  border: 1px solid #3A3A3C;
+}
+
+.insight-item label {
+  font-weight: 500;
+  color: #9B9B9F;
+  font-size: 0.85rem;
+}
+
+.insight-item span {
+  font-weight: 600;
+  color: #FFFFFF;
+}
+
+.insight-item .high-risk {
+  color: #F87171;
+}
+
+.insight-item .balanced-risk {
+  color: #6EE7B7;
+}
+
 .tool-loading {
   display: flex;
   align-items: center;
