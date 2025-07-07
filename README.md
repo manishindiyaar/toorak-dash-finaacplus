@@ -211,4 +211,6 @@ it will be running on - http://localhost:5000/
 
 
 
-Thankb you :)
+Thank you :)
+
+Hope you liked it :)
